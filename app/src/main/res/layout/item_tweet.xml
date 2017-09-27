@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="8dp"
+    android:background="#ffffff">
+
+    <ImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:srcCompat="@android:color/black"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/profile_image_description"/>
+
+    <TextView
+        android:id="@+id/tvFullName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:maxLength="20"
+        style="@style/BoldText"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvUserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="8dp"
+        android:layout_toEndOf="@+id/tvFullName"
+        android:maxLength="20"
+        style="@style/SmallLightText"
+        tools:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvTweetedAt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        style="@style/SmallLightText"
+        tools:text="1 hr ago"/>
+
+    <TextView
+        android:id="@+id/tvBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_below="@+id/tvUserName"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:linksClickable="true"
+        android:autoLink="all"
+        android:textColorLink="@color/TwitterBlue"
+        style="@style/RegularText"
+        tools:text="TextView" />
+
+    <Button
+        android:id="@+id/btnReply"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_below="@id/tvBody"
+        android:layout_toEndOf="@id/ivProfileImage"
+        android:layout_marginStart="8dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/icon_comment_24"/>
+
+    <Button
+        android:id="@+id/btnRetweet"
+        android:layout_height="24dp"
+        android:layout_width="24dp"
+        android:layout_toEndOf="@id/btnReply"
+        android:layout_below="@id/tvBody"
+        android:layout_marginStart="80dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/icon_retweet_24"/>
+
+    <TextView
+        android:id="@+id/tvRetweetCount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        style="@style/SmallLightText"
+        tools:text="55"
+        android:layout_marginStart="4dp"
+        android:layout_alignBottom="@id/btnRetweet"
+        android:layout_toEndOf="@id/btnRetweet" />
+
+    <Button
+        android:id="@+id/btnFavorite"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_toEndOf="@id/tvRetweetCount"
+        android:layout_below="@id/tvBody"
+        android:layout_marginStart="80dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:background="@drawable/icon_favorite_24"/>
+
+    <TextView
+        android:id="@+id/tvFavoriteCount"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        style="@style/SmallLightText"
+        tools:text="55"
+        android:layout_marginStart="4dp"
+        android:layout_alignBottom="@id/btnFavorite"
+        android:layout_toEndOf="@id/btnFavorite" />
+</RelativeLayout>

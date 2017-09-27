@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Twitter Client</string>
+    <string name="login_label">Log in</string>
+    <string name="intent_scheme">oauth</string>
+    <string name="intent_host">cprest</string>
+    <string name="profile_image_description">Profile image</string>
+    <string name="action_compose">Compose tweet</string>
+    <string name="action_view_profile">View profile</string>
+</resources>
