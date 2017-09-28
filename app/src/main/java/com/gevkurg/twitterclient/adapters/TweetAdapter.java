@@ -23,8 +23,8 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         this.tweets = tweets;
     }
 
-    public String getMaxId() {
-        return tweets.get(tweets.size()-1).getId();
+    public Long getOldestTweetId() {
+        return tweets.size() == 0 ? 1L : tweets.get(tweets.size()-1).getId();
     }
 
     public void clear() {

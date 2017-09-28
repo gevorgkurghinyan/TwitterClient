@@ -6,4 +6,7 @@
     <string name="profile_image_description">Profile image</string>
     <string name="action_compose">Compose tweet</string>
     <string name="action_view_profile">View profile</string>
+    <string name="tweet_button_text">Tweet</string>
+    <string name="new_tweet_hint_text">What\'s happening?</string>
+    <string name="log_out">Log out</string>
 </resources>

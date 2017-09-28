@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -29,7 +30,17 @@
                     android:scheme="@string/intent_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.TimelineActivity" />
+        <activity
+            android:name=".activities.TimelineActivity"
+            android:label="" />
+        <activity
+            android:name=".activities.ComposeActivity"
+            android:parentActivityName=".activities.TimelineActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.TimelineActivity" />
+        </activity>
+        <activity android:name=".activities.TweetDetailsActivity"></activity>
     </application>
 
 </manifest>

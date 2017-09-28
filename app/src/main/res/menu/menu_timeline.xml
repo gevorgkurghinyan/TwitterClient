@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_compose"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/icon_compose_tweet_24"
-        android:title="@string/action_compose"/>
+    <!--
+<item android:id="@+id/action_compose"
+    android:orderInCategory="100"
+    app:showAsAction="ifRoom"
+    android:icon="@drawable/icon_compose_tweet_24"
+    android:title="@string/action_compose"/>
 
-    <item android:id="@+id/action_profile"
-        android:orderInCategory="200"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/icon_profile_24"
-        android:title="@string/action_view_profile" />
+<item android:id="@+id/action_profile"
+    android:orderInCategory="200"
+    app:showAsAction="ifRoom"
+    android:icon="@drawable/icon_profile_24"
+    android:title="@string/action_view_profile" />
+    -->
 
-    <item android:id="@+id/action_settings"
+    <item android:id="@+id/action_logout"
         android:orderInCategory="300"
         app:showAsAction="never"
-        android:title="Settings" />
+        android:title="@string/log_out" />
 </menu>

@@ -1,6 +1,8 @@
 package com.gevkurg.twitterclient.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.adapters.TweetAdapter;
@@ -19,7 +22,7 @@ import com.gevkurg.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +36,6 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     RecyclerView rvTweets;
     SwipeRefreshLayout srLayout;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,21 @@ public class TimelineActivity extends AppCompatActivity {
         rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                if(tweetAdapter.getItemCount() == 0) {
-                    populateTimeline(null);
-                } else if (tweetAdapter.getItemCount() >= TwitterClient.TWEETS_PER_PAGE) {
-                    populateTimeline(tweetAdapter.getMaxId());
-                }
+                Long sinceId = tweetAdapter.getOldestTweetId();
+                client.getOlderHomeTimeline(sinceId, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        tweets.addAll(Tweet.fromJson(response));
+                        //TODO which notify method should be called.
+                        tweetAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                        Log.d("TwitterClient", errorResponse.toString());
+                        throwable.printStackTrace();
+                    }
+                });
             }
         });
 
@@ -70,11 +82,31 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 tweetAdapter.clear();
-                populateTimeline(null);
+                populateTimeline();
             }
         });
 
-        populateTimeline(null);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
+                startActivityForResult(i, ComposeActivity.REQUEST_CODE);
+            }
+        });
+
+        populateTimeline();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == ComposeActivity.REQUEST_CODE && resultCode == ComposeActivity.REQUEST_CODE) {
+            // Append this tweet to the top of the feed
+            Tweet tweet = Parcels.unwrap(data.getParcelableExtra("tweet"));
+            tweets.add(0, tweet);
+            tweetAdapter.notifyDataSetChanged();
+            rvTweets.smoothScrollToPosition(0);
+        }
     }
 
     @Override
@@ -85,33 +117,36 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        /*
         if (id == R.id.action_compose) {
-            //Intent i = new Intent(this, ComposeActivity.class);
-            //startActivityForResult(i, ComposeActivity.REQUEST_CODE);
+            Intent i = new Intent(this, ComposeActivity.class);
+            startActivityForResult(i, ComposeActivity.REQUEST_CODE);
         }
+
 
         if(id == R.id.action_profile) {
-            //Intent i = new Intent(this, ProfileActivity.class);
-            //startActivity(i);
+            Intent i = new Intent(this, ProfileActivity.class);
+            startActivity(i);
         }
+        */
 
-        if(id == R.id.action_settings) {
-            //Intent i = new Intent(this, SettingsActivity.class);
-            //startActivity(i);
+        if(id == R.id.action_logout) {
+            TwitterApplication.getRestClient().clearAccessToken();
+            Intent i = new Intent(this, LoginActivity.class);
+            startActivity(i);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void populateTimeline(String maxId) {
-        client.getHomeTimeline(maxId, new JsonHttpResponseHandler() {
+    private void populateTimeline() {
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                tweetAdapter.clear();
                 tweets.addAll(Tweet.fromJson(response));
                 //TODO which notify method should be called.
                 tweetAdapter.notifyDataSetChanged();
@@ -119,19 +154,8 @@ public class TimelineActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Log.d("TwitterClient", responseString);
-                throwable.printStackTrace();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("TwitterClient", errorResponse.toString());
-                throwable.printStackTrace();
-            }
-
-            @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                srLayout.setRefreshing(false);
                 Log.d("TwitterClient", errorResponse.toString());
                 throwable.printStackTrace();
             }

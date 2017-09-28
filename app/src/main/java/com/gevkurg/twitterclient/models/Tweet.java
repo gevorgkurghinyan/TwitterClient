@@ -12,12 +12,13 @@ import java.util.ArrayList;
 
 @Parcel
 public class Tweet {
-    private String id;
+    private Long id;
     private String body;
     private User user;
     private String createdAt;
     private int retweetCount;
     private int favoriteCount;
+    //private Entities entities;
 
     public User getUser() {
         return user;
@@ -27,11 +28,11 @@ public class Tweet {
         this.user = user;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -67,10 +68,20 @@ public class Tweet {
         this.favoriteCount = favoriteCount;
     }
 
+    /*
+    public Entities getEntities() {
+        return entities;
+    }
+
+    public void setEntities(Entities entities) {
+        this.entities = entities;
+    }
+    */
+
     public static Tweet fromJson(JSONObject json) {
         Tweet tweet = new Tweet();
         try {
-            tweet.id = json.getString("id_str");
+            tweet.id = json.getLong("id_str");
             tweet.body = json.getString("text");
             tweet.createdAt = json.getString("created_at");
             tweet.retweetCount = json.getInt("retweet_count");
