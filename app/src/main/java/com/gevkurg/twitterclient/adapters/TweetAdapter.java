@@ -1,6 +1,7 @@
 package com.gevkurg.twitterclient.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.gevkurg.twitterclient.R;
+import com.gevkurg.twitterclient.activities.TweetDetailsActivity;
 import com.gevkurg.twitterclient.models.Tweet;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -24,12 +28,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     public Long getOldestTweetId() {
-        return tweets.size() == 0 ? 1L : tweets.get(tweets.size()-1).getId();
+        return tweets.size() == 0 ? 1L : Long.valueOf(tweets.get(tweets.size()-1).getId());
     }
 
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
+    }
+
+    private Context getContext() {
+        return context;
     }
 
     @Override
@@ -46,7 +54,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         holder.tvUsername.setText(tweet.getUser().getScreenName());
         holder.tvBody.setText(tweet.getBody());
         holder.tvFullName.setText(tweet.getUser().getName());
-        holder.tvTweetedAt.setText(tweet.getCreatedAt());
+        holder.tvTweetedAt.setText(tweet.getRelativeCreatedAt());
         holder.tvRetweetCount.setText(Integer.toString(tweet.getRetweetCount()));
         holder.tvFavoriteCount.setText(Integer.toString(tweet.getFavoriteCount()));
 
@@ -60,7 +68,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         return tweets.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
         ImageView ivProfileImage;
         TextView tvUsername;
         TextView tvBody;
@@ -79,6 +87,20 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvTweetedAt = itemView.findViewById(R.id.tvTweetedAt);
             tvRetweetCount = itemView.findViewById(R.id.tvRetweetCount);
             tvFavoriteCount = itemView.findViewById(R.id.tvFavoriteCount);
+
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition(); // gets item position
+            if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
+                Tweet tweet = tweets.get(position);
+
+                Intent intent = new Intent(getContext(), TweetDetailsActivity.class);
+                intent.putExtra("tweet", Parcels.wrap(tweet));
+                getContext().startActivity(intent);
+            }
         }
     }
 }

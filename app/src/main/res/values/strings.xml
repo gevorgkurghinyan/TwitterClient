@@ -9,4 +9,10 @@
     <string name="tweet_button_text">Tweet</string>
     <string name="new_tweet_hint_text">What\'s happening?</string>
     <string name="log_out">Log out</string>
+    <string name="user_name">Gevorg Kurghinyan</string>
+    <string name="user_screen_name">gevorgkurghinyan</string>
+    <string name="tweet_text">My first tweet</string>
+    <string name="created_at_long">123123123</string>
+    <string name="retweets">Retweets</string>
+    <string name="likes">Likes</string>
 </resources>

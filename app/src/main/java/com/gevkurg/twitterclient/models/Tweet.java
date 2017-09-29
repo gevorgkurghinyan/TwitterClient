@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 @Parcel
 public class Tweet {
-    private Long id;
+    private String id;
     private String body;
     private User user;
     private String createdAt;
@@ -28,11 +28,11 @@ public class Tweet {
         this.user = user;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -45,6 +45,10 @@ public class Tweet {
     }
 
     public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getRelativeCreatedAt() {
         return Utils.getRelativeTimeAgo(createdAt);
     }
 
@@ -81,7 +85,7 @@ public class Tweet {
     public static Tweet fromJson(JSONObject json) {
         Tweet tweet = new Tweet();
         try {
-            tweet.id = json.getLong("id_str");
+            tweet.id = json.getString("id_str");
             tweet.body = json.getString("text");
             tweet.createdAt = json.getString("created_at");
             tweet.retweetCount = json.getInt("retweet_count");
