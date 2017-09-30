@@ -15,4 +15,7 @@
     <string name="created_at_long">123123123</string>
     <string name="retweets">Retweets</string>
     <string name="likes">Likes</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

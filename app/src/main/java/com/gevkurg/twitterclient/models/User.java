@@ -1,16 +1,32 @@
 package com.gevkurg.twitterclient.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gevkurg.twitterclient.database.TweetDatabase;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.parceler.Parcel;
 
+@Parcel(analyze = {User.class})
+@Table(database= TweetDatabase.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class User extends BaseModel {
 
-@Parcel
-public class User {
-
+    @Column
+    @PrimaryKey
     private long id;
+    @Column
     private String name;
+    @Column
+    @JsonProperty("screen_name")
     private String screenName;
+    @Column
+    @JsonProperty("profile_image_url")
     private String profileImageUrl;
 
     public long getId() {

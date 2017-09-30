@@ -1,6 +1,14 @@
 package com.gevkurg.twitterclient.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.gevkurg.twitterclient.database.TweetDatabase;
 import com.gevkurg.twitterclient.helper.Utils;
+import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ForeignKey;
+import com.raizlabs.android.dbflow.annotation.PrimaryKey;
+import com.raizlabs.android.dbflow.annotation.Table;
+import com.raizlabs.android.dbflow.structure.BaseModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,15 +18,30 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 
 
-@Parcel
-public class Tweet {
+@Parcel(analyze = {Tweet.class})
+@Table(database= TweetDatabase.class)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Tweet extends BaseModel {
+    @Column
+    @PrimaryKey
+    @JsonProperty("id_str")
     private String id;
+    @Column
+    @JsonProperty("text")
     private String body;
+    @Column
+    @ForeignKey(saveForeignKeyModel = false)
     private User user;
+    @Column
+    @JsonProperty("created_at")
     private String createdAt;
+    @Column
+    @JsonProperty("retweet_count")
     private int retweetCount;
+    @Column
+    @JsonProperty("favorite_count")
     private int favoriteCount;
-    //private Entities entities;
+    // private Entities entities;
 
     public User getUser() {
         return user;

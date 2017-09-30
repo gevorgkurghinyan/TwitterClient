@@ -1,27 +1,41 @@
 package com.gevkurg.twitterclient.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.parceler.Parcel;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@Parcel(analyze = {Media.class})
 public class Media {
-    private String type;
-    private String mediaUrl;
+    @JsonProperty("expanded_url")
+    private String expandedUrl;
+    private String url;
+    @JsonProperty("display_url")
+    private String displayUrl;
 
-    public String getMediaUrl() {
-        return mediaUrl;
+    public String getExpandedUrl() {
+        return expandedUrl;
     }
 
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
+    public void setExpandedUrl(String expandedUrl) {
+        this.expandedUrl = expandedUrl;
     }
 
-    public String getType() {
-        return type;
+    public String getUrl() {
+        return url;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
-    public boolean isPhoto() {
-        return "photo".equals(type);
+    public String getDisplayUrl() {
+        return displayUrl;
+    }
+
+    public void setDisplayUrl(String displayUrl) {
+        this.displayUrl = displayUrl;
     }
 }

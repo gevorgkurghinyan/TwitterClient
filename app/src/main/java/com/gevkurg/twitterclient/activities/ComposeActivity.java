@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.models.Tweet;
-import com.gevkurg.twitterclient.network.TwitterApplication;
+import com.gevkurg.twitterclient.TwitterApplication;
 import com.gevkurg.twitterclient.network.TwitterClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -21,21 +21,18 @@ import org.parceler.Parcels;
 
 import cz.msebera.android.httpclient.Header;
 
+
 public class ComposeActivity extends AppCompatActivity {
     private static final int MAX_CHARS = 140;
     public static int REQUEST_CODE = 100;
 
     private EditText etNewTweet;
     private TextView tvCharsLeft;
-    private TwitterClient twitterClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_compose);
-
-        etNewTweet = findViewById(R.id.etNewTweet);
-        tvCharsLeft = findViewById(R.id.tvCharsLeft);
 
         setupCharacterLimit();
     }

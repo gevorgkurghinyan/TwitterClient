@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="TwitterBlue">#50a5e6</color>
+    <color name="twitterBlue">#50a5e6</color>
     <color name="white">#ffffff</color>
+    <color name="lightGray">#666666</color>
 </resources>

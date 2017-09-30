@@ -9,6 +9,7 @@ import com.codepath.oauth.OAuthLoginActionBarActivity;
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.network.TwitterClient;
 
+
 public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 
     @Override

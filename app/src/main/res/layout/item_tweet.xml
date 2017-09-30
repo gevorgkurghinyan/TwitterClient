@@ -31,7 +31,7 @@
         android:id="@+id/tvUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/tvFullName"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@+id/tvFullName"
         android:maxLength="20"
@@ -55,16 +55,34 @@
         android:layout_below="@+id/tvUserName"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:linksClickable="true"
         android:autoLink="all"
-        android:textColorLink="@color/TwitterBlue"
+        android:textColorLink="@color/twitterBlue"
         style="@style/RegularText"
         tools:text="TextView" />
 
+    <!--
+    <ImageView
+        android:id="@+id/ivImageContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@android:color/black"
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:layout_below="@+id/tvBody"
+        android:layout_toEndOf="@+id/ivProfileImage"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/profile_image_description" />
+        -->
+
     <Button
         android:id="@+id/btnReply"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_below="@id/tvBody"
         android:layout_toEndOf="@id/ivProfileImage"
         android:layout_marginStart="8dp"
@@ -73,11 +91,11 @@
 
     <Button
         android:id="@+id/btnRetweet"
-        android:layout_height="24dp"
-        android:layout_width="24dp"
+        android:layout_height="20dp"
+        android:layout_width="20dp"
         android:layout_toEndOf="@id/btnReply"
         android:layout_below="@id/tvBody"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="72dp"
         style="?android:attr/borderlessButtonStyle"
         android:background="@drawable/icon_retweet_24"/>
 
@@ -85,19 +103,20 @@
         android:id="@+id/tvRetweetCount"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        style="@style/SmallLightText"
+        style="@style/LargeLightText"
         tools:text="55"
+        android:gravity="bottom"
         android:layout_marginStart="4dp"
         android:layout_alignBottom="@id/btnRetweet"
         android:layout_toEndOf="@id/btnRetweet" />
 
     <Button
         android:id="@+id/btnFavorite"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_toEndOf="@id/tvRetweetCount"
         android:layout_below="@id/tvBody"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="72dp"
         style="?android:attr/borderlessButtonStyle"
         android:background="@drawable/icon_favorite_24"/>
 
@@ -105,7 +124,7 @@
         android:id="@+id/tvFavoriteCount"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        style="@style/SmallLightText"
+        style="@style/LargeLightText"
         tools:text="55"
         android:layout_marginStart="4dp"
         android:layout_alignBottom="@id/btnFavorite"

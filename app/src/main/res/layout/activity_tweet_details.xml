@@ -65,13 +65,13 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/ivProfileImage"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
             android:autoLink="all"
             android:linksClickable="true"
             android:text="@string/tweet_text"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColorLink="@color/TwitterBlue" />
+            android:textColorLink="@color/twitterBlue" />
 
         <TextView
             android:id="@+id/tvCreatedAt"
@@ -86,7 +86,7 @@
             android:id="@+id/horizontalLine"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#666666"
+            android:background="@color/lightGray"
             android:layout_below="@+id/tvCreatedAt"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
@@ -102,12 +102,13 @@
 
         <TextView
             android:id="@+id/tvRetweets"
-            style="@style/SmallLightText"
+            style="@style/LargeLightText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/horizontalLine"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@+id/tvRetweetCount"
+            android:layout_alignBottom="@+id/tvRetweetCount"
             android:text="@string/retweets" />
 
         <TextView
@@ -122,12 +123,13 @@
 
         <TextView
             android:id="@+id/tvLike"
-            style="@style/SmallLightText"
+            style="@style/LargeLightText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/horizontalLine"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@+id/tvLikesCount"
+            android:layout_alignBottom="@+id/tvLikesCount"
             android:text="@string/likes" />
     </RelativeLayout>
 </RelativeLayout>

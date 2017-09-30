@@ -1,8 +1,9 @@
-package com.gevkurg.twitterclient.network;
+package com.gevkurg.twitterclient;
 
 import android.app.Application;
 import android.content.Context;
 
+import com.gevkurg.twitterclient.network.TwitterClient;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowLog;
 import com.raizlabs.android.dbflow.config.FlowManager;

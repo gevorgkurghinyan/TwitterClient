@@ -52,7 +52,7 @@ public class TweetDetailsActivity extends AppCompatActivity {
         try {
             tvCreatedAt.setText(STRING_FORMATTER.format(FORMATTER.parse(tweet.getCreatedAt())));
         } catch (ParseException e) {
-            Log.d("TWEET", "uh oh", e);
+            Log.d("TWEET", e.getMessage(), e);
         }
 
         TextView tvRetweetCount = findViewById(R.id.tvRetweetCount);

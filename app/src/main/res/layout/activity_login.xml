@@ -5,15 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.gevkurg.twitterclient.activities.LoginActivity"
-    android:padding="16dp"
-    android:background="@color/TwitterBlue">
+    android:padding="@dimen/activity_login_padding"
+    android:background="@color/twitterBlue">
 
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_button_white"
-        android:textColor="@color/TwitterBlue"
+        android:textColor="@color/twitterBlue"
         android:padding="16dp"
         android:textSize="20sp"
         android:onClick="loginToRest"

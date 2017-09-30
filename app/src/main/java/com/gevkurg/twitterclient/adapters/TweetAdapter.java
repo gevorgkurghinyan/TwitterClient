@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.activities.TweetDetailsActivity;
+import com.gevkurg.twitterclient.models.Entities;
+import com.gevkurg.twitterclient.models.Media;
 import com.gevkurg.twitterclient.models.Tweet;
 
 import org.parceler.Parcels;
@@ -51,7 +53,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Tweet tweet = tweets.get(position);
-        holder.tvUsername.setText(tweet.getUser().getScreenName());
+        holder.tvUsername.setText("@" + tweet.getUser().getScreenName());
         holder.tvBody.setText(tweet.getBody());
         holder.tvFullName.setText(tweet.getUser().getName());
         holder.tvTweetedAt.setText(tweet.getRelativeCreatedAt());
@@ -61,6 +63,23 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         Glide.with(context)
                 .load(tweet.getUser().getProfileImageUrl())
                 .into(holder.ivProfileImage);
+
+        //setupMedia(holder.ivImageContent, tweet);
+    }
+
+    private void setupMedia(ImageView ivImageContent , Tweet tweet) {
+        ivImageContent.setImageResource(0);
+        ivImageContent.setVisibility(View.GONE);
+        Entities entities = null; // tweet.getEntities();
+        if (entities != null) {
+            List<Media> mediaList = entities.getMedia();
+            if(mediaList.size() > 0) {
+                Glide.with(getContext())
+                        .load(mediaList.get(0).getUrl())
+                        .into(ivImageContent);
+                ivImageContent.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override
@@ -70,6 +89,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     class ViewHolder extends RecyclerView.ViewHolder  implements View.OnClickListener{
         ImageView ivProfileImage;
+        //ImageView ivImageContent;
         TextView tvUsername;
         TextView tvBody;
         TextView tvFullName;
@@ -81,6 +101,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             super(itemView);
 
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            //ivImageContent = itemView.findViewById(R.id.ivImageContent);
             tvUsername = itemView.findViewById(R.id.tvUserName);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvFullName = itemView.findViewById(R.id.tvFullName);
@@ -93,7 +114,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition(); // gets item position
+            int position = getAdapterPosition();
             if (position != RecyclerView.NO_POSITION) { // Check if an item was deleted, but the user clicked it before the UI removed it
                 Tweet tweet = tweets.get(position);
 
