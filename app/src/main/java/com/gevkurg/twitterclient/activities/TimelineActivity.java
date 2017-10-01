@@ -130,7 +130,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
     }
 
     private void populateTimeline(final boolean isFirstLoad, long id) {
-        if (Utils.isNetworkAvailable(this) && false) {
+        if (Utils.isNetworkAvailable(this)) {
             client.getHomeTimeline(isFirstLoad, id, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

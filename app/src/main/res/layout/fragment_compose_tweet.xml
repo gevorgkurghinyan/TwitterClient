@@ -23,7 +23,7 @@
         android:gravity="top"
         android:hint="@string/new_tweet_hint_text"
         android:inputType="textMultiLine"
-        android:textColor="@color/white"
+        android:textColor="@android:color/black"
         android:textColorHint="@color/lightGray"
         android:backgroundTint="@color/twitterBlue"/>
 
