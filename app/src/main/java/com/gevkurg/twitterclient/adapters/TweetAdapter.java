@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.activities.TweetDetailsActivity;
 import com.gevkurg.twitterclient.models.Entities;
@@ -62,6 +63,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
         Glide.with(context)
                 .load(tweet.getUser().getProfileImageUrl())
+                .apply(RequestOptions.circleCropTransform())
                 .into(holder.ivProfileImage);
 
         //setupMedia(holder.ivImageContent, tweet);

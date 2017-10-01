@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.models.Tweet;
 import com.gevkurg.twitterclient.models.User;
@@ -42,7 +43,9 @@ public class TweetDetailsActivity extends AppCompatActivity {
         tvTweetText.setText(tweet.getBody());
         ImageView ivProfileImage = findViewById(R.id.ivProfileImage);
         User user = tweet.getUser();
-        Glide.with(this).load(user.getProfileImageUrl()).into(ivProfileImage);
+        Glide.with(this).load(user.getProfileImageUrl())
+                .apply(RequestOptions.circleCropTransform())
+                .into(ivProfileImage);
         TextView tvUserName = findViewById(R.id.tvUserName);
         tvUserName.setText(user.getName());
         TextView tvUserScreenName = findViewById(R.id.tvUserScreenName);

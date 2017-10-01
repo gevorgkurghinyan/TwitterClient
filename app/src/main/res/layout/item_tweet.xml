@@ -101,11 +101,11 @@
 
     <TextView
         android:id="@+id/tvRetweetCount"
-        android:layout_width="wrap_content"
+        android:layout_width="40dp"
         android:layout_height="20dp"
         style="@style/LargeLightText"
         tools:text="55"
-        android:gravity="bottom"
+        android:gravity="center_vertical"
         android:layout_marginStart="4dp"
         android:layout_alignBottom="@id/btnRetweet"
         android:layout_toEndOf="@id/btnRetweet" />
@@ -116,7 +116,7 @@
         android:layout_height="20dp"
         android:layout_toEndOf="@id/tvRetweetCount"
         android:layout_below="@id/tvBody"
-        android:layout_marginStart="72dp"
+        android:layout_marginStart="56dp"
         style="?android:attr/borderlessButtonStyle"
         android:background="@drawable/icon_favorite_24"/>
 
@@ -126,6 +126,7 @@
         android:layout_height="20dp"
         style="@style/LargeLightText"
         tools:text="55"
+        android:gravity="center_vertical"
         android:layout_marginStart="4dp"
         android:layout_alignBottom="@id/btnFavorite"
         android:layout_toEndOf="@id/btnFavorite" />

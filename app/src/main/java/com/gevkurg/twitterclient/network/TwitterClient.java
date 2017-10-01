@@ -43,19 +43,15 @@ public class TwitterClient extends OAuthBaseClient {
                         context.getString(R.string.intent_scheme), context.getPackageName(), FALLBACK_URL));
     }
 
-    public void getHomeTimeline(AsyncHttpResponseHandler handler) {
-        getNewerHomeTimeline(1L, handler);
+    public void getHomeTimeline(boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
+        if (isFirstLoad) {
+            getHomeTimeline(id, "since_id", handler);
+        } else {
+            getHomeTimeline(id, "max_id", handler);
+        }
     }
 
-    public void getNewerHomeTimeline(Long sinceId, final AsyncHttpResponseHandler handler) {
-        getHomeTimeline(sinceId, "since_id", handler);
-    }
-
-    public void getOlderHomeTimeline( Long maxId, final AsyncHttpResponseHandler handler) {
-        getHomeTimeline(maxId, "max_id", handler);
-    }
-
-    public void getHomeTimeline(Long maxId, String paramName, AsyncHttpResponseHandler handler) {
+    private void getHomeTimeline(long maxId, String paramName, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
         params.put("count", TWEETS_PER_PAGE);

@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,14 +26,11 @@ import com.gevkurg.twitterclient.models.Tweet_Table;
 import com.gevkurg.twitterclient.network.TwitterClient;
 import com.gevkurg.twitterclient.network.Utils;
 import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
-
-import org.json.JSONArray;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,9 +40,11 @@ import cz.msebera.android.httpclient.Header;
 
 public class TimelineActivity extends AppCompatActivity implements ComposeTweetFragment.StatusUpdateListener {
 
+    private static final int PAGE_SIZE = 25;
+
     private TwitterClient client;
     TweetAdapter tweetAdapter;
-    List<Tweet> tweets;
+    List<Tweet> mTweets;
     RecyclerView rvTweets;
     SwipeRefreshLayout srLayout;
     private ComposeTweetFragment composeTweetFragment;
@@ -65,8 +63,8 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
 
         srLayout = findViewById(R.id.srLayout);
         rvTweets = findViewById(R.id.rvTweet);
-        tweets = new ArrayList<>();
-        tweetAdapter = new TweetAdapter(tweets);
+        mTweets = new ArrayList<>();
+        tweetAdapter = new TweetAdapter(mTweets);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(tweetAdapter);
@@ -74,29 +72,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
         rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Long sinceId = tweetAdapter.getOldestTweetId();
-                client.getOlderHomeTimeline(sinceId, new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        tweets.addAll(Tweet.fromJson(response));
-                        //TODO which notify method should be called.
-                        tweetAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        Log.d("TwitterClient", errorResponse.toString());
-                        throwable.printStackTrace();
-                    }
-                });
+                Long maxId = tweetAdapter.getOldestTweetId();
+                populateTimeline(false, maxId);
             }
         });
 
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                tweetAdapter.clear();
-                populateTimeline();
+                populateTimeline(true, 1L);
             }
         });
 
@@ -111,7 +95,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
             }
         });
 
-        populateTimeline();
+        populateTimeline(true, 1L);
     }
 
     @Override
@@ -140,20 +124,20 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
             composeTweetFragment.dismiss();
         }
 
-        tweets.add(0, tweet);
+        mTweets.add(0, tweet);
         tweetAdapter.notifyDataSetChanged();
         rvTweets.smoothScrollToPosition(0);
     }
 
-    private void populateTimeline() {
-        if (Utils.isNetworkAvailable(this)) {
-            client.getHomeTimeline(new AsyncHttpResponseHandler() {
+    private void populateTimeline(final boolean isFirstLoad, long id) {
+        if (Utils.isNetworkAvailable(this) && false) {
+            client.getHomeTimeline(isFirstLoad, id, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
                         List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>(){});
-                        updateAdapter(tweets);
+                        updateAdapter(tweets, isFirstLoad);
                         // save to database
                         saveToDatabase();
                     } catch (IOException e){
@@ -168,19 +152,21 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
             });
         } else {
             // try to read from database
-            updateAdapter(readFromDatabase());
+            Utils.showSnackBarForInternetConnection(rvTweets, TimelineActivity.this);
+            updateAdapter(readFromDatabase(id, 25), isFirstLoad);
         }
     }
 
-    private void updateAdapter(List<Tweet> tweets) {
-        tweetAdapter.clear();
-        this.tweets.addAll(tweets);
-        //TODO which notify method should be called.
+    private void updateAdapter(List<Tweet> tweets, boolean isFirstLoad) {
+        if (isFirstLoad) {
+            tweetAdapter.clear();
+        }
+
+        this.mTweets.addAll(tweets.isEmpty() ? tweets : tweets.subList(1, tweets.size()));
         tweetAdapter.notifyDataSetChanged();
         srLayout.setRefreshing(false);
     }
 
-    // TODO: this method should consider also pagination
     private void saveToDatabase(){
         FlowManager.getDatabase(TweetDatabase.class)
                 .beginTransactionAsync(new ProcessModelTransaction.Builder<>(
@@ -190,7 +176,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
                                 tweet.getUser().save();
                                 tweet.save();
                             }
-                        }).addAll(tweets).build())  // add elements (can also handle multiple)
+                        }).addAll(mTweets).build())  // add elements (can also handle multiple)
                 .error(new Transaction.Error() {
                     @Override
                     public void onError(Transaction transaction, Throwable error) {
@@ -205,12 +191,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
                 }).build().execute();
     }
 
-    // TODO: this method should consider also pagination.
-    private List<Tweet> readFromDatabase(){
+    private List<Tweet> readFromDatabase(long id, int offset){
         List<Tweet> tweets = SQLite.select()
                 .from(Tweet.class)
                 .orderBy(Tweet_Table.createdAt, false)
-                .limit(25)
+                .offset(offset)
+                .limit(PAGE_SIZE)
                 .queryList();
 
         return tweets;
