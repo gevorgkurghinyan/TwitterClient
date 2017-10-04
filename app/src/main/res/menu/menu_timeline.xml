@@ -7,16 +7,19 @@
     app:showAsAction="ifRoom"
     android:icon="@drawable/icon_compose_tweet_24"
     android:title="@string/action_compose"/>
+   -->
 
-<item android:id="@+id/action_profile"
-    android:orderInCategory="200"
-    app:showAsAction="ifRoom"
-    android:icon="@drawable/icon_profile_24"
-    android:title="@string/action_view_profile" />
-    -->
+    <item
+        android:id="@+id/action_profile"
+        android:icon="@drawable/icon_profile_24"
+        android:orderInCategory="200"
+        android:title="@string/action_view_profile"
+        app:showAsAction="ifRoom" />
 
-    <item android:id="@+id/action_logout"
+
+    <item
+        android:id="@+id/action_logout"
         android:orderInCategory="300"
-        app:showAsAction="never"
-        android:title="@string/log_out" />
+        android:title="@string/log_out"
+        app:showAsAction="never" />
 </menu>

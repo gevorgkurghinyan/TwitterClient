@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.gevkurg.twitterclient.R;
+import com.gevkurg.twitterclient.activities.ProfileActivity;
 import com.gevkurg.twitterclient.activities.TweetDetailsActivity;
 import com.gevkurg.twitterclient.models.Entities;
 import com.gevkurg.twitterclient.models.Media;
@@ -22,11 +23,11 @@ import org.parceler.Parcels;
 import java.util.List;
 
 
-public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> {
+public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
     private List<Tweet> tweets;
     Context context;
 
-    public TweetAdapter (List<Tweet> tweets) {
+    public TweetsAdapter(List<Tweet> tweets) {
         this.tweets = tweets;
     }
 
@@ -37,6 +38,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     public void clear() {
         tweets.clear();
         notifyDataSetChanged();
+    }
+
+    public void addAll(List<Tweet> tweets) {
+        this.tweets.addAll(tweets);
     }
 
     private Context getContext() {
@@ -53,7 +58,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Tweet tweet = tweets.get(position);
+        final Tweet tweet = tweets.get(position);
         holder.tvUsername.setText("@" + tweet.getUser().getScreenName());
         holder.tvBody.setText(tweet.getBody());
         holder.tvFullName.setText(tweet.getUser().getName());
@@ -65,6 +70,15 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 .load(tweet.getUser().getProfileImageUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .into(holder.ivProfileImage);
+
+        holder.ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getContext(), ProfileActivity.class);
+                i.putExtra("username", tweet.getUser().getScreenName());
+                getContext().startActivity(i);
+            }
+        });
 
         //setupMedia(holder.ivImageContent, tweet);
     }

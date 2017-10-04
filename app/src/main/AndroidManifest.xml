@@ -41,7 +41,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".activities.TimelineActivity" />
         </activity>
-        <activity android:name=".activities.TweetDetailsActivity" android:label=""></activity>
+        <activity
+            android:name=".activities.TweetDetailsActivity"
+            android:label="" />
+        <activity android:name=".activities.ProfileActivity"></activity>
     </application>
 
 </manifest>

@@ -2,58 +2,34 @@ package com.gevkurg.twitterclient.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gevkurg.twitterclient.R;
 import com.gevkurg.twitterclient.TwitterApplication;
-import com.gevkurg.twitterclient.adapters.TweetAdapter;
-import com.gevkurg.twitterclient.database.TweetDatabase;
+import com.gevkurg.twitterclient.adapters.SmartFragmentStatePagerAdapter;
 import com.gevkurg.twitterclient.fragments.ComposeTweetFragment;
-import com.gevkurg.twitterclient.listeners.EndlessRecyclerViewScrollListener;
-import com.gevkurg.twitterclient.models.Tweet;
-import com.gevkurg.twitterclient.models.Tweet_Table;
-import com.gevkurg.twitterclient.network.TwitterClient;
-import com.gevkurg.twitterclient.network.Utils;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.sql.language.SQLite;
-import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
-import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
-import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
+import com.gevkurg.twitterclient.fragments.HomeTimelineFragment;
+import com.gevkurg.twitterclient.fragments.MentionsTimelineFragment;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
-
-public class TimelineActivity extends AppCompatActivity implements ComposeTweetFragment.StatusUpdateListener {
+public class TimelineActivity extends AppCompatActivity {
 
     private static final int PAGE_SIZE = 25;
 
-    private TwitterClient client;
-    TweetAdapter tweetAdapter;
-    List<Tweet> mTweets;
-    RecyclerView rvTweets;
-    SwipeRefreshLayout srLayout;
+    private TweetsPagerAdapter tweetsPagerAdapter;
+    private ViewPager viewPager;
     private ComposeTweetFragment composeTweetFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        client = TwitterApplication.getRestClient();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -61,41 +37,11 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
         getSupportActionBar().setLogo(R.drawable.icon_logo_24);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        srLayout = findViewById(R.id.srLayout);
-        rvTweets = findViewById(R.id.rvTweet);
-        mTweets = new ArrayList<>();
-        tweetAdapter = new TweetAdapter(mTweets);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvTweets.setLayoutManager(linearLayoutManager);
-        rvTweets.setAdapter(tweetAdapter);
-
-        rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount) {
-                Long maxId = tweetAdapter.getOldestTweetId();
-                populateTimeline(false, maxId);
-            }
-        });
-
-        srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                populateTimeline(true, 1L);
-            }
-        });
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                composeTweetFragment = new ComposeTweetFragment();
-                composeTweetFragment.show(fragmentManager, "COMPOSE_TWEET");
-                composeTweetFragment.setListener(TimelineActivity.this);
-            }
-        });
-
-        populateTimeline(true, 1L);
+        viewPager = findViewById(R.id.viewpager);
+        tweetsPagerAdapter = new TweetsPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(tweetsPagerAdapter);
+        TabLayout tabLayout = findViewById(R.id.slidingTabs);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
@@ -115,58 +61,15 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
             return true;
         }
 
+        if (id == R.id.action_profile) {
+            Intent intent = new Intent(this, ProfileActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onStatusUpdated(Tweet tweet) {
-        if (composeTweetFragment != null) {
-            composeTweetFragment.dismiss();
-        }
-
-        mTweets.add(0, tweet);
-        tweetAdapter.notifyDataSetChanged();
-        rvTweets.smoothScrollToPosition(0);
-    }
-
-    private void populateTimeline(final boolean isFirstLoad, long id) {
-        if (Utils.isNetworkAvailable(this)) {
-            client.getHomeTimeline(isFirstLoad, id, new AsyncHttpResponseHandler() {
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                    try {
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>(){});
-                        updateAdapter(tweets, isFirstLoad);
-                        // save to database
-                        saveToDatabase();
-                    } catch (IOException e){
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                    error.printStackTrace();
-                }
-            });
-        } else {
-            // try to read from database
-            Utils.showSnackBarForInternetConnection(rvTweets, TimelineActivity.this);
-            updateAdapter(readFromDatabase(id, 25), isFirstLoad);
-        }
-    }
-
-    private void updateAdapter(List<Tweet> tweets, boolean isFirstLoad) {
-        if (isFirstLoad) {
-            tweetAdapter.clear();
-        }
-
-        this.mTweets.addAll(tweets.isEmpty() ? tweets : tweets.subList(1, tweets.size()));
-        tweetAdapter.notifyDataSetChanged();
-        srLayout.setRefreshing(false);
-    }
-
+    /*
     private void saveToDatabase(){
         FlowManager.getDatabase(TweetDatabase.class)
                 .beginTransactionAsync(new ProcessModelTransaction.Builder<>(
@@ -200,5 +103,37 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetF
                 .queryList();
 
         return tweets;
+    }
+    */
+
+    // Returns order of the fragments in the view pager
+    public class TweetsPagerAdapter extends SmartFragmentStatePagerAdapter {
+
+        private String tabTitles[] = { "Home", "@ Mentions" };
+
+        public TweetsPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            if(position == 0) {
+                return HomeTimelineFragment.newInstance();
+            } else if (position == 1) {
+                return MentionsTimelineFragment.newInstance();
+            } else {
+                return null;
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
     }
 }

@@ -51,12 +51,62 @@ public class TwitterClient extends OAuthBaseClient {
         }
     }
 
-    private void getHomeTimeline(long maxId, String paramName, AsyncHttpResponseHandler handler) {
+    private void getHomeTimeline(long id, String paramName, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
         params.put("count", TWEETS_PER_PAGE);
         params.put("include_entities", true);
-        params.put(paramName, maxId);
+        params.put(paramName, id);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getMentions(boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
+        if (isFirstLoad) {
+            getMentions(id, "since_id", handler);
+        } else {
+            getMentions(id, "max_id", handler);
+        }
+    }
+
+    private void getMentions(long id, String paramName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/mentions_timeline.json");
+        RequestParams params = new RequestParams();
+        params.put("count", TWEETS_PER_PAGE);
+        params.put(paramName, id);
+        params.put("include_rts", 1);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUser(String username, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("users/show.json");
+        RequestParams params = new RequestParams();
+        params.put("include_entities", "false");
+        params.put("screen_name", username);
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getCredentials(AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("account/verify_credentials.json");
+        RequestParams params = new RequestParams();
+        params.put("skip_status", 1);
+        params.put("include_entities", "false");
+        client.get(apiUrl, params, handler);
+    }
+
+    public void getUserTimeline(String username, boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
+        if (isFirstLoad) {
+            getUserTimeline(username, id, "since_id", handler);
+        } else {
+            getUserTimeline(username, id, "max_id", handler);
+        }
+    }
+
+    private void getUserTimeline(String username, long id, String paramName, AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/user_timeline.json");
+        RequestParams params = new RequestParams();
+        params.put(paramName, id);
+        params.put("screen_name", username);
+        params.put("count", TWEETS_PER_PAGE);
         client.get(apiUrl, params, handler);
     }
 

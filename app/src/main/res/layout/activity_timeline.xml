@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.gevkurg.twitterclient.activities.TimelineActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -19,31 +21,23 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"/>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/srLayout"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/slidingTabs"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:tabMode="fixed"
+        android:background="@android:color/white"
+        app:tabTextColor="@color/twitterBlue"
+        app:tabIndicatorColor="@color/twitterBlue"
+        app:tabIndicatorHeight="4dp"
+        app:tabSelectedTextColor="@color/twitterBlue">
+
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@android:color/white" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvTweet"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="8dp" />
-
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/icon_compose_tweet_24"
-        app:backgroundTint="#50a5e6"
-        app:layout_anchor="@id/srLayout"
-        app:layout_anchorGravity="bottom|right|end" />
-
-</android.support.design.widget.CoordinatorLayout>
+</LinearLayout>
