@@ -18,28 +18,25 @@ public class MentionsTimelineFragment extends TweetsListFragment {
 
     private TwitterClient client = TwitterApplication.getRestClient();
 
-    public MentionsTimelineFragment() {
-        // Required empty public constructor
-    }
-
     public static MentionsTimelineFragment newInstance() {
         MentionsTimelineFragment fragment = new MentionsTimelineFragment();
         return fragment;
     }
 
     @Override
-    public void populateTimeline(final boolean isFirstLoad, long id) {
+    public void populateTimeline(String maxId) {
         if (Utils.isNetworkAvailable(getActivity())) {
-            client.getMentions(isFirstLoad, id, new AsyncHttpResponseHandler() {
+            client.getMentions(maxId, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>(){});
-                        updateAdapter(tweets, isFirstLoad);
+                        List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>() {
+                        });
+                        updateAdapter(tweets);
                         // save to database
                         //saveToDatabase();
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }

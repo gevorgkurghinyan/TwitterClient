@@ -41,6 +41,25 @@ public class Tweet extends BaseModel {
     @Column
     @JsonProperty("favorite_count")
     private int favoriteCount;
+    private boolean retweeted;
+
+    public void setRetweeted(boolean retweeted) {
+        this.retweeted = retweeted;
+    }
+
+    public void setFavorited(boolean favorited) {
+        this.favorited = favorited;
+    }
+
+    private boolean favorited;
+
+    public boolean isRetweeted() {
+        return retweeted;
+    }
+
+    public boolean isFavorited() {
+        return favorited;
+    }
     // private Entities entities;
 
     public User getUser() {

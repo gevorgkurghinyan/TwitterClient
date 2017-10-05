@@ -31,6 +31,7 @@ public class ComposeTweetFragment extends DialogFragment {
     private EditText etNewTweet;
     private TextView tvCharsLeft;
     private StatusUpdateListener listener;
+    private String inReplyToTweetId;
 
     public ComposeTweetFragment() {
         // Required empty public constructor
@@ -55,7 +56,7 @@ public class ComposeTweetFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 TwitterClient client = TwitterApplication.getRestClient();
-                client.postTweet(etNewTweet.getText().toString(), new JsonHttpResponseHandler() {
+                client.postTweet(etNewTweet.getText().toString(), inReplyToTweetId, new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         Tweet tweet = Tweet.fromJson(response);
@@ -98,6 +99,10 @@ public class ComposeTweetFragment extends DialogFragment {
 
     public void setListener(StatusUpdateListener listener) {
         this.listener = listener;
+    }
+
+    public void setInReplyToTweetId(String inReplyToTweetId) {
+        this.inReplyToTweetId = inReplyToTweetId;
     }
 
     public interface StatusUpdateListener {

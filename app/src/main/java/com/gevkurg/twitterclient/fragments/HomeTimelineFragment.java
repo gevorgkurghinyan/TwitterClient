@@ -17,6 +17,7 @@ import cz.msebera.android.httpclient.Header;
 public class HomeTimelineFragment extends TweetsListFragment {
 
     private TwitterClient client = TwitterApplication.getRestClient();
+    private ComposeTweetFragment composeTweetFragment;
 
     public static HomeTimelineFragment newInstance() {
         HomeTimelineFragment fragment = new HomeTimelineFragment();
@@ -24,15 +25,15 @@ public class HomeTimelineFragment extends TweetsListFragment {
     }
 
     @Override
-    public void populateTimeline(final boolean isFirstLoad, long id) {
+    public void populateTimeline(String id) {
         if (Utils.isNetworkAvailable(getActivity())) {
-            client.getHomeTimeline(isFirstLoad, id, new AsyncHttpResponseHandler() {
+            client.getHomeTimeline(id, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
                         List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>(){});
-                        updateAdapter(tweets, isFirstLoad);
+                        updateAdapter(tweets);
                         // save to database
                         //saveToDatabase();
                     } catch (IOException e){

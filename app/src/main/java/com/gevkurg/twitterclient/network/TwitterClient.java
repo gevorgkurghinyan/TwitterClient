@@ -43,36 +43,20 @@ public class TwitterClient extends OAuthBaseClient {
                         context.getString(R.string.intent_scheme), context.getPackageName(), FALLBACK_URL));
     }
 
-    public void getHomeTimeline(boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
-        if (isFirstLoad) {
-            getHomeTimeline(id, "since_id", handler);
-        } else {
-            getHomeTimeline(id, "max_id", handler);
-        }
-    }
-
-    private void getHomeTimeline(long id, String paramName, AsyncHttpResponseHandler handler) {
+    public void getHomeTimeline(String maxId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/home_timeline.json");
         RequestParams params = new RequestParams();
         params.put("count", TWEETS_PER_PAGE);
         params.put("include_entities", true);
-        params.put(paramName, id);
+        params.put("max_id", maxId);
         client.get(apiUrl, params, handler);
     }
 
-    public void getMentions(boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
-        if (isFirstLoad) {
-            getMentions(id, "since_id", handler);
-        } else {
-            getMentions(id, "max_id", handler);
-        }
-    }
-
-    private void getMentions(long id, String paramName, AsyncHttpResponseHandler handler) {
+    public void getMentions(String maxId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/mentions_timeline.json");
         RequestParams params = new RequestParams();
         params.put("count", TWEETS_PER_PAGE);
-        params.put(paramName, id);
+        params.put("max_id", maxId);
         params.put("include_rts", 1);
         client.get(apiUrl, params, handler);
     }
@@ -93,36 +77,51 @@ public class TwitterClient extends OAuthBaseClient {
         client.get(apiUrl, params, handler);
     }
 
-    public void getUserTimeline(String username, boolean isFirstLoad, long id, AsyncHttpResponseHandler handler) {
-        if (isFirstLoad) {
-            getUserTimeline(username, id, "since_id", handler);
-        } else {
-            getUserTimeline(username, id, "max_id", handler);
-        }
-    }
-
-    private void getUserTimeline(String username, long id, String paramName, AsyncHttpResponseHandler handler) {
+    public void getUserTimeline(String username, String maxId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/user_timeline.json");
         RequestParams params = new RequestParams();
-        params.put(paramName, id);
+        params.put("max_id", maxId);
         params.put("screen_name", username);
         params.put("count", TWEETS_PER_PAGE);
         client.get(apiUrl, params, handler);
     }
 
-    public void postTweet(String tweetBody, AsyncHttpResponseHandler handler) {
+    public void postTweet(String tweetBody, String tweetId, AsyncHttpResponseHandler handler) {
         String apiUrl = getApiUrl("statuses/update.json");
         RequestParams params = new RequestParams();
         params.put("status", tweetBody);
+        if (tweetId != null) {
+            params.put("in_reply_to_status_id", tweetId);
+        }
         client.post(apiUrl, params, handler);
     }
 
-	/* 1. Define the endpoint URL with getApiUrl and pass a relative path to the endpoint
-	 * 	  i.e getApiUrl("statuses/home_timeline.json");
-	 * 2. Define the parameters to pass to the request (query or body)
-	 *    i.e RequestParams params = new RequestParams("foo", "bar");
-	 * 3. Define the request method and make a call to the client
-	 *    i.e client.get(apiUrl, params, handler);
-	 *    i.e client.post(apiUrl, params, handler);
-	 */
+    public void replyToStatus(String status, Long statusId, final AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("statuses/update.json");
+        RequestParams params = new RequestParams();
+        params.put("status", status);
+        if (statusId != null) {
+            params.put("in_reply_to_status_id", statusId);
+        }
+        client.post(apiUrl, params, handler);
+    }
+
+    public void retweet(Long id, final AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl(String.format("statuses/retweet/%d.json", id));
+        client.post(apiUrl, handler);
+    }
+
+    public void favorite(Long id, final AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/create.json");
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        getClient().post(apiUrl, params, handler);
+    }
+
+    public void unFavorite(Long id, final AsyncHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("favorites/destroy.json");
+        RequestParams params = new RequestParams();
+        params.put("id", id);
+        getClient().post(apiUrl, params, handler);
+    }
 }

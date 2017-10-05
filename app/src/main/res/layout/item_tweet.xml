@@ -79,25 +79,25 @@
         android:contentDescription="@string/profile_image_description" />
         -->
 
-    <Button
-        android:id="@+id/btnReply"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+
+    <!-- TODO evenly space views horizontally-->
+    <ImageView
+        android:id="@+id/ivReply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/tvBody"
         android:layout_toEndOf="@id/ivProfileImage"
         android:layout_marginStart="8dp"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/icon_comment_24"/>
+        android:src="@drawable/icon_comment_24"/>
 
-    <Button
-        android:id="@+id/btnRetweet"
-        android:layout_height="20dp"
-        android:layout_width="20dp"
-        android:layout_toEndOf="@id/btnReply"
+    <ImageView
+        android:id="@+id/ivRetweet"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_toEndOf="@id/ivReply"
         android:layout_below="@id/tvBody"
-        android:layout_marginStart="72dp"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/icon_retweet_24"/>
+        android:layout_marginStart="56dp"
+        android:src="@drawable/icon_retweet_24"/>
 
     <TextView
         android:id="@+id/tvRetweetCount"
@@ -107,18 +107,17 @@
         tools:text="55"
         android:gravity="center_vertical"
         android:layout_marginStart="4dp"
-        android:layout_alignBottom="@id/btnRetweet"
-        android:layout_toEndOf="@id/btnRetweet" />
+        android:layout_alignBottom="@id/ivRetweet"
+        android:layout_toEndOf="@id/ivRetweet" />
 
-    <Button
-        android:id="@+id/btnFavorite"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+    <ImageView
+        android:id="@+id/ivFavorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_toEndOf="@id/tvRetweetCount"
         android:layout_below="@id/tvBody"
-        android:layout_marginStart="56dp"
-        style="?android:attr/borderlessButtonStyle"
-        android:background="@drawable/icon_favorite_24"/>
+        android:layout_marginStart="48dp"
+        android:src="@drawable/icon_favorite_24"/>
 
     <TextView
         android:id="@+id/tvFavoriteCount"
@@ -128,6 +127,6 @@
         tools:text="55"
         android:gravity="center_vertical"
         android:layout_marginStart="4dp"
-        android:layout_alignBottom="@id/btnFavorite"
-        android:layout_toEndOf="@id/btnFavorite" />
+        android:layout_alignBottom="@id/ivFavorite"
+        android:layout_toEndOf="@id/ivFavorite" />
 </RelativeLayout>

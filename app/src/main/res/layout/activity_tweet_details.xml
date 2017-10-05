@@ -83,7 +83,7 @@
             tools:text="@string/created_at_long" />
 
         <View
-            android:id="@+id/horizontalLine"
+            android:id="@+id/hlCounts"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/lightGray"
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/horizontalLine"
+            android:layout_below="@+id/hlCounts"
             tools:text="1250" />
 
         <TextView
@@ -105,7 +105,7 @@
             style="@style/LargeLightText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/horizontalLine"
+            android:layout_below="@+id/hlCounts"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@+id/tvRetweetCount"
             android:layout_alignBottom="@+id/tvRetweetCount"
@@ -116,7 +116,7 @@
             style="@style/BoldText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/horizontalLine"
+            android:layout_below="@+id/hlCounts"
             android:layout_marginStart="8dp"
             android:layout_toEndOf="@+id/tvRetweets"
             tools:text="1250" />
@@ -126,10 +126,62 @@
             style="@style/LargeLightText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/horizontalLine"
+            android:layout_below="@+id/hlCounts"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@+id/tvLikesCount"
             android:layout_alignBottom="@+id/tvLikesCount"
             android:text="@string/likes" />
+
+        <View
+            android:id="@+id/hlActionIcons"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/lightGray"
+            android:layout_below="@+id/tvRetweetCount"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <TableLayout
+            android:id="@+id/tlActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/hlActionIcons"
+            android:paddingBottom="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:stretchColumns="1">
+
+            <TableRow>
+
+                <ImageView
+                    android:id="@+id/ivReply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/hlActionIcons"
+                    android:src="@drawable/icon_comment_24" />
+
+                <ImageView
+                    android:id="@+id/ivRetweet"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_toEndOf="@id/ivReply"
+                    android:layout_below="@id/hlActionIcons"
+                    android:layout_marginStart="72dp"
+                    android:src="@drawable/icon_retweet_24"/>
+
+                <ImageView
+                    android:id="@+id/ivFavorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/tvRetweetCount"
+                    android:layout_below="@id/hlActionIcons"
+                    android:layout_marginStart="56dp"
+                    android:src="@drawable/icon_favorite_24"/>
+
+            </TableRow>
+
+        </TableLayout>
+
     </RelativeLayout>
 </RelativeLayout>

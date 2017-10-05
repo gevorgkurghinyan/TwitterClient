@@ -39,7 +39,7 @@ public class ComposeActivity extends AppCompatActivity {
 
     public void submitTweet(View view) {
         TwitterClient client = TwitterApplication.getRestClient();
-        client.postTweet(etNewTweet.getText().toString(), new JsonHttpResponseHandler() {
+        client.postTweet(etNewTweet.getText().toString(), "", new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 Tweet tweet = Tweet.fromJson(response);

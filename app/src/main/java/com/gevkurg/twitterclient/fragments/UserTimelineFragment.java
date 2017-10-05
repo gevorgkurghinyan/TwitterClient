@@ -1,6 +1,7 @@
 package com.gevkurg.twitterclient.fragments;
 
 import android.os.Bundle;
+import android.view.View;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,18 +42,19 @@ public class UserTimelineFragment extends TweetsListFragment {
     }
 
     @Override
-    public void populateTimeline(final boolean isFirstLoad, long id) {
+    public void populateTimeline(String maxId) {
         if (Utils.isNetworkAvailable(getActivity())) {
-            client.getUserTimeline(username, isFirstLoad, id, new AsyncHttpResponseHandler() {
+            client.getUserTimeline(username, maxId, new AsyncHttpResponseHandler() {
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                     try {
                         ObjectMapper objectMapper = new ObjectMapper();
-                        List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>(){});
-                        updateAdapter(tweets, isFirstLoad);
+                        List<Tweet> tweets = objectMapper.readValue(responseBody, new TypeReference<List<Tweet>>() {
+                        });
+                        updateAdapter(tweets);
                         // save to database
                         //saveToDatabase();
-                    } catch (IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }

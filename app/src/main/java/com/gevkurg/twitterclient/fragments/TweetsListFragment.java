@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class TweetsListFragment extends Fragment implements ComposeTweetFragment.StatusUpdateListener{
+public abstract class TweetsListFragment extends Fragment implements ComposeTweetFragment.StatusUpdateListener {
 
     private TweetsAdapter tweetsAdapter;
     private SwipeRefreshLayout srLayout;
@@ -36,7 +36,7 @@ public abstract class TweetsListFragment extends Fragment implements ComposeTwee
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        populateTimeline(true, 1L);
+        populateTimeline(null);
     }
 
     @Nullable
@@ -45,7 +45,7 @@ public abstract class TweetsListFragment extends Fragment implements ComposeTwee
         View view = inflater.inflate(R.layout.fragment_tweets_list, container, false);
 
         srLayout = view.findViewById(R.id.srLayout);
-        rvTweets =view.findViewById(R.id.rvTweet);
+        rvTweets = view.findViewById(R.id.rvTweet);
         mTweets = new ArrayList<>();
         tweetsAdapter = new TweetsAdapter(mTweets);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -55,15 +55,16 @@ public abstract class TweetsListFragment extends Fragment implements ComposeTwee
         rvTweets.addOnScrollListener(new EndlessRecyclerViewScrollListener(linearLayoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
-                Long maxId = tweetsAdapter.getOldestTweetId();
-                populateTimeline(false, maxId);
+                String maxId = tweetsAdapter.getOldestTweetId();
+                populateTimeline(maxId);
             }
         });
 
         srLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                populateTimeline(true, 1L);
+                tweetsAdapter.clear();
+                populateTimeline(null);
             }
         });
 
@@ -90,7 +91,7 @@ public abstract class TweetsListFragment extends Fragment implements ComposeTwee
         add(tweet);
     }
 
-    public abstract void populateTimeline(final boolean isFirstLoad, long id);
+    public abstract void populateTimeline(String maxId);
 
     public void add(Tweet tweet) {
         mTweets.add(0, tweet);
@@ -104,12 +105,8 @@ public abstract class TweetsListFragment extends Fragment implements ComposeTwee
         srLayout.setRefreshing(false);
     }
 
-    protected void updateAdapter(List<Tweet> tweets, boolean isFirstLoad) {
-        if (isFirstLoad) {
-            tweetsAdapter.clear();
-        }
-
-        tweetsAdapter.addAll(tweets.isEmpty() ? tweets : tweets.subList(1, tweets.size()));
+    protected void updateAdapter(List<Tweet> tweets) {
+        tweetsAdapter.addAll(tweets);
         tweetsAdapter.notifyDataSetChanged();
         srLayout.setRefreshing(false);
     }
