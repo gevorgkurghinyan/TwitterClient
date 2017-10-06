@@ -20,8 +20,6 @@ import com.gevkurg.twitterclient.fragments.MentionsTimelineFragment;
 
 public class TimelineActivity extends AppCompatActivity {
 
-    private static final int PAGE_SIZE = 25;
-
     private TweetsPagerAdapter tweetsPagerAdapter;
     private ViewPager viewPager;
     private ComposeTweetFragment composeTweetFragment;
@@ -68,43 +66,6 @@ public class TimelineActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
-    /*
-    private void saveToDatabase(){
-        FlowManager.getDatabase(TweetDatabase.class)
-                .beginTransactionAsync(new ProcessModelTransaction.Builder<>(
-                        new ProcessModelTransaction.ProcessModel<Tweet>() {
-                            @Override
-                            public void processModel(Tweet tweet, DatabaseWrapper dbWrapper) {
-                                tweet.getUser().save();
-                                tweet.save();
-                            }
-                        }).addAll(mTweets).build())  // add elements (can also handle multiple)
-                .error(new Transaction.Error() {
-                    @Override
-                    public void onError(Transaction transaction, Throwable error) {
-                        error.printStackTrace();
-                    }
-                })
-                .success(new Transaction.Success() {
-                    @Override
-                    public void onSuccess(Transaction transaction) {
-
-                    }
-                }).build().execute();
-    }
-
-    private List<Tweet> readFromDatabase(long id, int offset){
-        List<Tweet> tweets = SQLite.select()
-                .from(Tweet.class)
-                .orderBy(Tweet_Table.createdAt, false)
-                .offset(offset)
-                .limit(PAGE_SIZE)
-                .queryList();
-
-        return tweets;
-    }
-    */
 
     // Returns order of the fragments in the view pager
     public class TweetsPagerAdapter extends SmartFragmentStatePagerAdapter {

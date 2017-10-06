@@ -50,7 +50,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     }
 
     public void addAll(List<Tweet> tweets) {
-        this.tweets.addAll(tweets);
+
+        for (Tweet t : tweets) {
+            if (!this.tweets.contains(t)) {
+                this.tweets.add(t);
+            }
+        }
     }
 
     private Context getContext() {

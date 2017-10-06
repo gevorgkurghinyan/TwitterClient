@@ -154,4 +154,20 @@ public class Tweet extends BaseModel {
         }
         return tweets;
     }
+
+    @Override
+    public boolean equals(Object object) {
+        boolean isEqual = false;
+
+        if (object != null && object instanceof Tweet) {
+            isEqual = this.id.equals(((Tweet) object).id);
+        }
+
+        return isEqual;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.id.hashCode();
+    }
 }

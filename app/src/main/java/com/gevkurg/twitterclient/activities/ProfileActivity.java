@@ -37,16 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        /*
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.icon_logo_24);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
-        */
-
         twitterClient = TwitterApplication.getRestClient();
-
         String username = getIntent().getStringExtra("username");
 
         if (savedInstanceState == null) {
